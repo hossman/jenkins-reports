@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+
 # NOTE: use tmp files for all curl commands
 # so if the downloads dies in the middle we don't have a partial file
 
@@ -40,13 +41,27 @@ find output/html/job-data/ -name url.txt | sort -R |
       echo $log_gz_file
     fi
     
-    tests_file=$dir/jenkins.tests.xml
-    if [ ! -e $tests_file ]
+    tests_csv_file=$dir/jenkins.tests.csv
+    tests_xml_file=$dir/jenkins.tests.xml
+    tests_xml_gz_file=$tests_xml_file.gz
+    if [ ! -e $tests_xml_gz_file ]
     then
-      curl -sS `cat $url_file`/testReport/api/xml > $download_tmp_file
-      # TODO: script to crunch the data into a more compact CSV, then gzip (and rm) the XML
-      mv $download_tmp_file $tests_file
-      echo $tests_file
+      if [ ! -e $tests_xml_file ]
+      then
+        curl -sS `cat $url_file`/testReport/api/xml > $download_tmp_file
+        mv $download_tmp_file $tests_xml_file
+        echo $tests_xml_file
+      fi
+      if [ ! -e $tests_csv_file ]
+      then
+        python summarize-test-results.py < $tests_xml_file > $download_tmp_file
+        mv $download_tmp_file $tests_csv_file
+        echo $tests_csv_file
+      fi
+      gzip -c $tests_xml_file > $gzip_tmp_file
+      mv $gzip_tmp_file $tests_xml_gz_file
+      rm $tests_xml_file
+      echo $tests_xml_gz_file
     fi
   done
 

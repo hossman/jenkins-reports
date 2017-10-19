@@ -35,7 +35,7 @@ entry = dom.documentElement
 feed_id = entry.getElementsByTagNameNS(planetNS, 'id')[0].firstChild.nodeValue
 entry_id = entry.getElementsByTagNameNS(atomNS, 'id')[0].firstChild.nodeValue
 
-path_id_parts = entry_id.split('/')[-2:] # job name + build #
+path_id_parts = entry_id.split('/')[-3:] # job name + build# + extra slash
 path_id_parts.insert(0, feed_id) # prepend feed_id
 path_id = '/'.join(path_id_parts)
 

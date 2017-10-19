@@ -12,7 +12,7 @@ set -e
 find output/html/job-data/ -name url.txt | sort -R |
   while read url_file
   do
-    #echo $url_file
+    echo "# $url_file"
     dir=$(dirname $url_file)
     download_tmp_file=$dir/download.tmp.dat
     gzip_tmp_file=$dir/gzip.tmp.dat
@@ -20,7 +20,7 @@ find output/html/job-data/ -name url.txt | sort -R |
     summary_file=$dir/jenkins.summary.xml
     if [ ! -e $summary_file ]
     then
-      curl -sS `cat $url_file`/api/xml > $download_tmp_file
+      curl -f -sS `cat $url_file`/api/xml > $download_tmp_file
       mv $download_tmp_file $summary_file
       echo $summary_file
     fi
@@ -31,7 +31,7 @@ find output/html/job-data/ -name url.txt | sort -R |
     then
       if [ ! -e $log_file ]
       then
-        curl -sS `cat $url_file`/consoleText > $download_tmp_file
+        curl -f -sS `cat $url_file`/consoleText > $download_tmp_file
         mv $download_tmp_file $log_file
         echo $log_file
       fi
@@ -48,7 +48,7 @@ find output/html/job-data/ -name url.txt | sort -R |
     then
       if [ ! -e $tests_xml_file ]
       then
-        curl -sS `cat $url_file`/testReport/api/xml > $download_tmp_file
+        curl -f -sS `cat $url_file`/testReport/api/xml > $download_tmp_file
         mv $download_tmp_file $tests_xml_file
         echo $tests_xml_file
       fi

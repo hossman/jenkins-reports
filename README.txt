@@ -6,7 +6,7 @@ Assuming you have venus installed in "~/code/venus" you can run this report ala.
 
     cd jenkins-reports
     python ~/code/venus/planet.py venus.ini
-    bash fetch-data-files.sh
+    bash fetch-all-data-files.sh
 
 
 A few things to note about configuringng the "sources" in venus.ini....
@@ -20,10 +20,12 @@ A few things to note about configuringng the "sources" in venus.ini....
 
 
 TODO:
- - update fetch-data-files.sh to parse & crunch the jenkins.tests.xml files as csv
-   - then gzip & remove the original jenkins.tests.xml -- just like we do for log files
- - fetch-data-files.sh's find command should be configurable, only look for files modified since X
+
  - have a script that combines the CSV files from the most recent X builds
+ - fetch-data-files.sh needs to play nice with builds that don't run tests
+   - Example: if a build failed because of git errors before any tests run,
+              then: the /testReport/api/xml URL returns 404
+ - fetch-all-data-files.sh's find command should be configurable, only look for files modified since X
  - wrapper script ready to go for cron job?
    - take in the venus path as a command line
    - cd to the dirname of the script

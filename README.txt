@@ -21,7 +21,14 @@ A few things to note about configuringng the "sources" in venus.ini....
 
 TODO:
 
- - have a script that combines the CSV files from the most recent X builds
+ - have a script that combines the CSV files from the builds in the last X days
+   - for builds older then X days, zip up (or just remove?) the CSV files
+     - if we archive/delete the "old" csv files first, the first script/find-command might be simpler?
+   - ideally this would compute ratios of fail/pass/skip
+     - but maybe for now just grep for ^FAIL + filename
+       - plus another where we ignore filename & raw_status and use uniq -c to get failure counts?
+     - the ratios are important long term so that "nightly" tests which fail every day don't show up as
+       "low" failure count compared to other tests
  - fetch-data-files.sh needs to play nice with builds that don't run tests
    - Example: if a build failed because of git errors before any tests run,
               then: the /testReport/api/xml URL returns 404

@@ -24,6 +24,8 @@
 
 mkdir -p output/html/reports
 
+# TODO: a create a "recent-test-results.csv.gz"
+#  ... should looks like recent-method-failures.csv -- but with the FAIL/PASS still included
 
 ### recent failures at method granularity - sorted, and including the directory for each
 find output/html/job-data/ -mtime -7 -name \*.csv | xargs grep '^FAIL' | perl -nle 'my ($file,$line) = split /:/; $file =~ s{^.*/([^/]+/[^/]+/\d+/).*\.csv$}{$1}; $line = join(",", (split(",", $line))[1,2])  ; print "$line,$file"' | sort > output/html/reports/recent-method-failures.csv

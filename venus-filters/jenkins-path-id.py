@@ -17,13 +17,17 @@
 Add a 'path-id' to each entry based on the original 'link' and what we know about jenkins build URLs
 and then create a directory with that path-id where we create a url.txt (if it doesn't already exist)
 
+The url.txt will have it's mtime set to match that of the feed entry (so even if we only run once a day,
+the file timestamp on the url.txt file (and other files created later) will (hopefully) match when the 
+build actually happened.
+
 NOTE: Due to laziness, this depends on having 'ignore_in_feed = id' configured   (Since it's 
       neccessary for jenkins feed entires to not conflict anyway) as well as each feed having an 
       'id' configured
 
 """
 
-import os, re, sys, urlparse, xml.dom.minidom
+import os, time, calendar, sys, xml.dom.minidom
 
 atomNS = 'http://www.w3.org/2005/Atom'
 planetNS = 'http://planet.intertwingly.net/'
@@ -54,5 +58,11 @@ if not os.path.exists(url_file_name):
     with open(url_file_name, "w") as f:
         f.write(entry_id)
 
+# set the modified time on the url.txt file based on the entry
+# we're trusting that venus has already normalized the date format
+# (although AFAICT jenkins is already well behaved here)
+mtime = calendar.timegm(time.strptime(entry.getElementsByTagNameNS(atomNS, 'updated')[0].firstChild.nodeValue, "%Y-%m-%dT%H:%M:%SZ"))
+os.utime(url_file_name, (mtime, mtime))
+        
 # very last thing we do is write the updated DOM back to venus
 print entry.toxml('utf-8')

@@ -28,10 +28,16 @@ echo "### Starting Run to Fetch All Data (of recent jobs)"
 find output/html/job-data/ -mtime -7 -name url.txt | sort -R |
   while read url_file
   do
-    if ! ./fetch-data-files.sh $url_file;
+    if ./fetch-data-files.sh $url_file;
     then
+      # everything worked, set the mtime on all files in the dir to match the url.txt
+      touch -d "$(date -R -r $url_file)" $(dirname $url_file)/*
+      touch -d "$(date -R -r $url_file)" $(dirname $url_file)
+      
+    else
       echo "# ... failures from: $url_file"
     fi
+    
   done
 
                                                  

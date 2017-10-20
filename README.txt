@@ -37,6 +37,8 @@ Once the above commands have been run...
      - more details about any failure mentioned in the /reports...
      - CSV with detailed list of test (method) results (PASS and FAIL) ... if and only if tests were run
      - full build logs ... if and only if at least one test failure occured (to save space)
+     - NOTE: the file modification times of all files in this dir (should) match when the job was run,
+       (acording to the feed) even if we fetched those files much later
 
 TODO: customize the venus template to add some pretty links to the reports & raw job-data
 
@@ -61,21 +63,15 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
 
 TODO LIST:
 
- - jenkins-path-id.py: set the mtime of the url.txt files to match the feed entry date?
-   - then in our bash scripts, set the mtime of all the files we create to match the mtime of url.txt?
-     - ala: touch -d "$(date -R -r url.txt)" new_file.xxx
-   - that way all of our other find commands can be accurate relative when the job ran,
-     even if there were issues with the downloads of the data files
-   - and regardless of the order that fetch-all-data-files does things, it can set the mtime on the
-     directories to match url.txt, so they sort properly
  - generate better reports
-   - ideally this would compute ratios of fail/pass/skip
-   - the ratios are important long term so that "nightly" tests which fail every day don't show up as
-     "low" failure count compared to other tests
+   - ideally we should compute ratios of fail/pass/skip
+   - the ratios are important long term so that some "nightly" tests which might fail every day
+     actually shows up "high" in our report, instead of "low" just because it's absolute fail count is small
  - archive/delete older files
    - for builds older then X days, zip up (or just remove?) the CSV files
    - for builders older then X days, do we care about the logs either?
    - we could probably just delete any file older then the 7 days we use for generating the reports?
+   - NOTE: fetch-all-data-files.py is setting the mtime on all the data files, so this should be trivial
  - wrapper script ready to go for cron job?
    - take in the venus path as a command line
    - cd to the dirname of the script

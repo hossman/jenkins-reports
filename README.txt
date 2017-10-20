@@ -53,6 +53,10 @@ A few things to note about configuring the "sources" in venus.ini....
    - so we use a custom filter to rewrite things using the URL...
    - ...and use the 'source id' assigned in the config to organize the data files we download for each build
 
+You will notice warnings from venus about "Duplicate subscription" .. this is because the feed level
+GUID used in all jenkins feeds is identical -- you can safely ignore this WARNING.
+
+
 
 TODO LIST:
 

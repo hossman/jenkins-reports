@@ -22,20 +22,25 @@
 
 #######
 
+# set -x
+
 set -e
-# NOTE: use tmp files for all curl commands
-# so if the downloads dies in the middle we don't have a partial file
 
 if [ -z ${1:+x} ]
 then
   echo "must specify a url.txt file on the command line"
   exit -1
 fi
+
 url_file=$1
 dir=$(dirname $url_file)
+
+# NOTE: use tmp files for all curl & gzip command output
+# so if the downloads dies in the middle we don't have a partial file
 download_tmp_file=$dir/download.tmp.dat
 gzip_tmp_file=$dir/gzip.tmp.dat
 
+# summary file for every build
 summary_file=$dir/jenkins.summary.xml
 if [ ! -e $summary_file ]
 then
@@ -44,22 +49,19 @@ then
   echo $summary_file
 fi
 
-log_file=$dir/jenkins.log.txt
-log_gz_file=$log_file.gz
-if [ ! -e $log_gz_file ]
-then
-  if [ ! -e $log_file ]
+# if there are no testReports, then no tests were run (git failure, or maybe an artifacts only build)
+# in which case we can skip all other steps
+if ! grep -L testReport $summary_file > /dev/null 2>&1; then
+  no_tests_file=$dir/no_tests.txt
+  if [ ! -e $summary_file ]
   then
-    curl -f -sS `cat $url_file`/consoleText > $download_tmp_file
-    mv $download_tmp_file $log_file
-    echo $log_file
+    touch $no_tests_file
+    echo $no_tests_file
   fi
-  gzip -c $log_file > $gzip_tmp_file
-  mv $gzip_tmp_file $log_gz_file
-  rm $log_file
-  echo $log_gz_file
+  exit 0
 fi
 
+# if we're still here, then tests ran -- download & summarize the test report
 tests_csv_file=$dir/jenkins.tests.csv
 tests_xml_file=$dir/jenkins.tests.xml
 tests_xml_gz_file=$tests_xml_file.gz
@@ -79,8 +81,28 @@ then
   fi
   gzip -c $tests_xml_file > $gzip_tmp_file
   mv $gzip_tmp_file $tests_xml_gz_file
-  rm $tests_xml_file
+  rm -f $tests_xml_file
   echo $tests_xml_gz_file
+fi
+
+# if there were any test fails, download the full build log
+# (don't bother downloading for successful builds to save space)
+if ! grep -L '<failCount>0</failCount>' $summary_file > /dev/null 2>&1; then
+  log_file=$dir/jenkins.log.txt
+  log_gz_file=$log_file.gz
+  if [ ! -e $log_gz_file ]
+  then
+    if [ ! -e $log_file ]
+    then
+      curl -f -sS `cat $url_file`/consoleText > $download_tmp_file
+      mv $download_tmp_file $log_file
+      echo $log_file
+    fi
+    gzip -c $log_file > $gzip_tmp_file
+    mv $gzip_tmp_file $log_gz_file
+    rm -f $log_file
+    echo $log_gz_file
+  fi
 fi
 
 

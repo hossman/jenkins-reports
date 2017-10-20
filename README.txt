@@ -34,7 +34,8 @@ Once the above commands have been run...
     output/html/reports
      - some CSV summary reports of "recent" test failures 
     output/html/job-data/
-     - access to the (ziped) test reports and full logs for any failure mentioned in the summary reports
+     - CSV with detailed list of test results (PASS and FAIL) ... if and only if tests were run
+     - full build logs ... if and only if at least one test failure occured (to save space)
 
 TODO: customize the venus template to add some pretty links to the reports & raw job-data
 
@@ -60,7 +61,7 @@ TODO LIST:
      - ala: touch -d "$(date -R -r url.txt)" new_file.xxx
    - that way all of our other find commands can be accurate relative when the job ran,
      even if there were issues with the downloads of the data files
-   - and regardless of the other that fetch-all-data-files does things, it can set the mtime on the
+   - and regardless of the order that fetch-all-data-files does things, it can set the mtime on the
      directories to match url.txt, so they sort properly
  - generate better reports
    - ideally this would compute ratios of fail/pass/skip
@@ -69,13 +70,8 @@ TODO LIST:
  - archive older CSV files
    - for builds older then X days, zip up (or just remove?) the CSV files
    - for builders older then X days, do we care about the logs either?
- - fetch-data-files.sh needs to play nice with builds that don't run tests
-   - AHA: if a build *does* have tests, they'll be in the summary.xml file
-     - '<action _class="hudson.tasks.junit.TestResultAction">'
-   - Example: if a build failed because of git errors before any tests run,
-              then: the /testReport/api/xml URL returns 404
-   - ALSO: the "Artifacts" and "refguide" builds don't produce any test results normally
- - fetch-all-data-files.sh's find command should be configurable, only look for files modified since X
+ - fetch-all-data-files.sh's find command should be configurable, only look for url.txt files modified since X
+   - this could/should be where we archive/delete files older then X
  - wrapper script ready to go for cron job?
    - take in the venus path as a command line
    - cd to the dirname of the script

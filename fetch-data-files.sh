@@ -64,8 +64,7 @@ fi
 # if we're still here, then tests ran -- download & summarize the test report
 tests_csv_file=$dir/jenkins.tests.csv
 tests_xml_file=$dir/jenkins.tests.xml
-tests_xml_gz_file=$tests_xml_file.gz
-if [ ! -e $tests_xml_gz_file ]
+if [ ! -e $tests_csv_file ]
 then
   if [ ! -e $tests_xml_file ]
   then
@@ -73,16 +72,11 @@ then
     mv $download_tmp_file $tests_xml_file
     echo $tests_xml_file
   fi
-  if [ ! -e $tests_csv_file ]
-  then
-    python summarize-test-results.py < $tests_xml_file > $download_tmp_file
-    mv $download_tmp_file $tests_csv_file
-    echo $tests_csv_file
-  fi
-  gzip -c $tests_xml_file > $gzip_tmp_file
-  mv $gzip_tmp_file $tests_xml_gz_file
+  python summarize-test-results.py < $tests_xml_file > $download_tmp_file
+  mv $download_tmp_file $tests_csv_file
+  echo $tests_csv_file
   rm -f $tests_xml_file
-  echo $tests_xml_gz_file
+
 fi
 
 # if there were any test fails, download the full build log

@@ -1,35 +1,77 @@
 
+####
+#### WHAT IS THIS?
+####
 
-You must have a copy of the "venus" Blog Planet software -- we use it for the initial heavy lifting.
+This repo provides some tools for:
+ * fetching the ATOM Feeds from multiple Jenkins instances building Lucene/Solr
+ * fetching the logs & test results associated with those builds 
+ * crunching the test results to generate some reports
 
-Assuming you have venus installed in "~/code/venus" you can run this report ala...
+####
+#### HOW TO RUN THESE TOOLS
+####
+
+To use these tools You must have a copy of the "venus" Blog Planet software -- we use it for the initial heavy lifting.
+
+Assuming you have venus installed in "~/code/venus" you can fetch all data and run the reports via...
 
     cd jenkins-reports
     python ~/code/venus/planet.py venus.ini
     bash fetch-all-data-files.sh
+    bash generate-test-summary-reports.sh
 
+TODO: adding a convinient wrappe script that can be put directly in a crontab
 
-A few things to note about configuringng the "sources" in venus.ini....
+####
+#### WHAT YOU GET
+####
+
+Once the above commands have been run...
+
+    output/html/index.html
+     - the Venus generated "planet" of recent jenkins jobs across all sources
+    output/html/reports
+     - some CSV summary reports of "recent" test failures 
+    output/html/job-data/
+     - access to the (ziped) test reports and full logs for any failure mentioned in the summary reports
+
+TODO: customize the venus template to add some pretty links to the reports & raw job-data
+
+####
+#### NOTES ON MAINTAINING THIS
+####
+
+A few things to note about configuring the "sources" in venus.ini....
 
  * every source should have a "name" that's short & human readable 
  * every source *MUST* have an 'id' that's unique
    - Jenkins ATOM Feed GUIDs all look like "hudson.dev.java.net,2017,JOB_NAME,#BUILD"
    - which means if multiple jenkins instances all have a job named "Lucene-Solr-master-Windows"
      venus gets confused
-   - so we use a custom filter to rewrite things using the 'id' assignedin the config.
+   - so we use a custom filter to rewrite things using the URL...
+   - ...and use the 'source id' assigned in the config to organize the data files we download for each build
 
 
-TODO:
+TODO LIST:
 
- - have a script that combines the CSV files from the builds in the last X days
-   - for builds older then X days, zip up (or just remove?) the CSV files
-     - if we archive/delete the "old" csv files first, the first script/find-command might be simpler?
+ - jenkins-path-id.py: set the mtime of the url.txt files to match the feed entry date?
+   - then in our bash scripts, set the mtime of all the files we create to match the mtime of url.txt?
+     - ala: touch -d "$(date -R -r url.txt)" new_file.xxx
+   - that way all of our other find commands can be accurate relative when the job ran,
+     even if there were issues with the downloads of the data files
+   - and regardless of the other that fetch-all-data-files does things, it can set the mtime on the
+     directories to match url.txt, so they sort properly
+ - generate better reports
    - ideally this would compute ratios of fail/pass/skip
-     - but maybe for now just grep for ^FAIL + filename
-       - plus another where we ignore filename & raw_status and use uniq -c to get failure counts?
-     - the ratios are important long term so that "nightly" tests which fail every day don't show up as
-       "low" failure count compared to other tests
+   - the ratios are important long term so that "nightly" tests which fail every day don't show up as
+     "low" failure count compared to other tests
+ - archive older CSV files
+   - for builds older then X days, zip up (or just remove?) the CSV files
+   - for builders older then X days, do we care about the logs either?
  - fetch-data-files.sh needs to play nice with builds that don't run tests
+   - AHA: if a build *does* have tests, they'll be in the summary.xml file
+     - '<action _class="hudson.tasks.junit.TestResultAction">'
    - Example: if a build failed because of git errors before any tests run,
               then: the /testReport/api/xml URL returns 404
    - ALSO: the "Artifacts" and "refguide" builds don't produce any test results normally
@@ -42,3 +84,4 @@ TODO:
  - make things pretty?
    - update the venus templates to link to our cached job-data for each entry
    - javascript UI tools to browse the stats?
+ - see venus.ini for some notes about requests to Steve & uwe about customizing their feeds to only get lucene jobs

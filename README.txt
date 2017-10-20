@@ -32,6 +32,7 @@ TODO:
  - fetch-data-files.sh needs to play nice with builds that don't run tests
    - Example: if a build failed because of git errors before any tests run,
               then: the /testReport/api/xml URL returns 404
+   - ALSO: the "Artifacts" and "refguide" builds don't produce any test results normally
  - fetch-all-data-files.sh's find command should be configurable, only look for files modified since X
  - wrapper script ready to go for cron job?
    - take in the venus path as a command line

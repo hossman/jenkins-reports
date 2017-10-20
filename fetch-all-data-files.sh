@@ -24,9 +24,6 @@
 
 echo "### Starting Run to Fetch All Data (of recent jobs)"
 
-# TODO: change this find output to be limited by date (bash script param)...
-# ...so as the # of builds grows, we aren't constantly rechecking old builds
-#
 # NOTE:  using sort -R here to try and reduce how much we request from one server back to back
 find output/html/job-data/ -mtime -7 -name url.txt | sort -R |
   while read url_file

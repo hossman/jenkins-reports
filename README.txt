@@ -32,9 +32,10 @@ Once the above commands have been run...
     output/html/index.html
      - the Venus generated "planet" of recent jenkins jobs across all sources
     output/html/reports
-     - some CSV summary reports of "recent" test failures 
+     - some CSV summary reports of test failures in the past 7 days
     output/html/job-data/
-     - CSV with detailed list of test results (PASS and FAIL) ... if and only if tests were run
+     - more details about any failure mentioned in the /reports...
+     - CSV with detailed list of test (method) results (PASS and FAIL) ... if and only if tests were run
      - full build logs ... if and only if at least one test failure occured (to save space)
 
 TODO: customize the venus template to add some pretty links to the reports & raw job-data
@@ -71,11 +72,10 @@ TODO LIST:
    - ideally this would compute ratios of fail/pass/skip
    - the ratios are important long term so that "nightly" tests which fail every day don't show up as
      "low" failure count compared to other tests
- - archive older CSV files
+ - archive/delete older files
    - for builds older then X days, zip up (or just remove?) the CSV files
    - for builders older then X days, do we care about the logs either?
- - fetch-all-data-files.sh's find command should be configurable, only look for url.txt files modified since X
-   - this could/should be where we archive/delete files older then X
+   - we could probably just delete any file older then the 7 days we use for generating the reports?
  - wrapper script ready to go for cron job?
    - take in the venus path as a command line
    - cd to the dirname of the script

@@ -8,6 +8,12 @@ This repo provides some tools for:
  * fetching the logs & test results associated with those builds 
  * crunching the test results to generate some reports
 
+You can view the (ongoing) results here:
+
+  http://fucit.org/solr-jenkins-reports/
+  http://fucit.org/solr-jenkins-reports/reports/
+
+
 ####
 #### HOW TO RUN THESE TOOLS
 ####

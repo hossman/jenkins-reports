@@ -42,3 +42,9 @@ fi
 python $planet_py venus.ini
 ./fetch-all-data-files.sh
 ./generate-test-summary-reports.sh
+
+echo "## Cleaning up old job-data"
+
+# NOTE: if changing this, make it's more then generate-test-summary-reports
+# (too lazy to be bothered worrying about the "exactly 7")
+find output/html/job-data/ -mtime +7 -exec rm -d {} \;

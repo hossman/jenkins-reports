@@ -69,11 +69,6 @@ TODO LIST:
    - ideally we should compute ratios of fail/pass/skip
    - the ratios are important long term so that some "nightly" tests which might fail every day
      actually shows up "high" in our report, instead of "low" just because it's absolute fail count is small
- - archive/delete older files
-   - for builds older then X days, zip up (or just remove?) the CSV files
-   - for builders older then X days, do we care about the logs either?
-   - we could probably just delete any file older then the 7 days we use for generating the reports?
-   - NOTE: fetch-all-data-files.py is setting the mtime on all the data files, so this should be trivial
  - make things pretty?
    - update the venus templates to link to our cached job-data for each entry
    - javascript UI tools to browse the stats?

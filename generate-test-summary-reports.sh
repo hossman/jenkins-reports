@@ -20,6 +20,8 @@
 # Loops over all the recent '*.csv' files it can find (in job-data) and produces
 # some summary reports
 
+# NOTE: if changing any of the -mtime rules, make sure run.sh is updated to not prune files we care about
+
 #######
 
 echo "## Generating Summary Reports..."

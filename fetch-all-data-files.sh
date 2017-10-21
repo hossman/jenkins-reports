@@ -17,15 +17,18 @@
 
 #######
 
-# Loops over all the 'url.txt' files it can find and execs fetch-data-files.sh on each
+# Loops over all the "recent' url.txt files it can find and execs fetch-data-files.sh on each
 # (Ignores failures from fetch-data-files.sh so it can keep going)
+#
+# In this script 'recent' is defined as 4 days -- if we have a job older then that
+# and still couldn't get some of it's data files, it's probably long gone
 
 #######
 
 echo "## Starting Run to Fetch All Data (of recent jobs)"
 
 # NOTE:  using sort -R here to try and reduce how much we request from one server back to back
-find output/html/job-data/ -mtime -7 -name url.txt | sort -R |
+find output/html/job-data/ -mtime -4 -name url.txt | sort -R |
   while read url_file
   do
     if ./fetch-data-files.sh $url_file;

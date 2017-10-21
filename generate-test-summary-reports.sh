@@ -22,6 +22,8 @@
 
 #######
 
+echo "## Generating Summary Reports..."
+
 mkdir -p output/html/reports
 
 # TODO: a create a "recent-test-results.csv.gz"

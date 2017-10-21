@@ -17,11 +17,11 @@ To use these tools You must have a copy of the "venus" Blog Planet software -- w
 Assuming you have venus installed in "~/code/venus" you can fetch all data and run the reports via...
 
     cd jenkins-reports
-    python ~/code/venus/planet.py venus.ini
-    bash fetch-all-data-files.sh
-    bash generate-test-summary-reports.sh
+    ./run.sh ~/code/venus/planet.py
 
-TODO: adding a convinient wrappe script that can be put directly in a crontab
+A convinience wrapper script that appends all output to "output/cron.log.txt" is available...
+
+    17 */3 * * * /home/hossman/jenkins-reports/cron.sh /home/hossman/venus/planet.py
 
 ####
 #### WHAT YOU GET
@@ -39,6 +39,8 @@ Once the above commands have been run...
      - full build logs ... if and only if at least one test failure occured (to save space)
      - NOTE: the file modification times of all files in this dir (should) match when the job was run,
        (acording to the feed) even if we fetched those files much later
+    output/cron.log.txt
+     - infinitely appended output from each run of cron.sh 
 
 TODO: customize the venus template to add some pretty links to the reports & raw job-data
 
@@ -72,11 +74,6 @@ TODO LIST:
    - for builders older then X days, do we care about the logs either?
    - we could probably just delete any file older then the 7 days we use for generating the reports?
    - NOTE: fetch-all-data-files.py is setting the mtime on all the data files, so this should be trivial
- - wrapper script ready to go for cron job?
-   - take in the venus path as a command line
-   - cd to the dirname of the script
-   - run everything under set -e
-   - redirect all script output to some log file
  - make things pretty?
    - update the venus templates to link to our cached job-data for each entry
    - javascript UI tools to browse the stats?

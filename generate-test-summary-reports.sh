@@ -20,7 +20,7 @@
 # Loops over all the recent '*.csv' files it can find (in job-data) and produces
 # some summary reports
 
-# NOTE: if changing any of the -mtime rules, make sure run.sh is updated to not prune files we care about
+# NOTE: if changing any of the -mmin rules, make sure run.sh is updated to not prune files we care about
 
 #######
 
@@ -35,7 +35,7 @@ mkdir -p output/html/reports
 # just past 24 hours
 find output/html/job-data/ -mmin -1440 -name \*.csv | xargs grep '^FAIL' | perl -nle 'my ($file,$line) = split /:/; $file =~ s{^.*/([^/]+/[^/]+/\d+/).*\.csv$}{$1}; $line = join(",", (split(",", $line))[1,2])  ; print "$line,$file"' | sort > output/html/reports/24hours-method-failures.csv
 # past 7 days
-find output/html/job-data/ -mtime -7 -name \*.csv | xargs grep '^FAIL' | perl -nle 'my ($file,$line) = split /:/; $file =~ s{^.*/([^/]+/[^/]+/\d+/).*\.csv$}{$1}; $line = join(",", (split(",", $line))[1,2])  ; print "$line,$file"' | sort > output/html/reports/7days-method-failures.csv
+find output/html/job-data/ -mmin -10080 -name \*.csv | xargs grep '^FAIL' | perl -nle 'my ($file,$line) = split /:/; $file =~ s{^.*/([^/]+/[^/]+/\d+/).*\.csv$}{$1}; $line = join(",", (split(",", $line))[1,2])  ; print "$line,$file"' | sort > output/html/reports/7days-method-failures.csv
 
 ### recent failures at a class level - summarized & sorted by by count
 # past 7 days

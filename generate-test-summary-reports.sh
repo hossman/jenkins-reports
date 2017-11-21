@@ -32,9 +32,19 @@ mkdir -p output/html/reports
 #  ... should looks like recent-method-failures.csv -- but with the FAIL/PASS still included
 
 ### recent failures at method granularity - sorted, and including the directory for each
-find output/html/job-data/ -mtime -7 -name \*.csv | xargs grep '^FAIL' | perl -nle 'my ($file,$line) = split /:/; $file =~ s{^.*/([^/]+/[^/]+/\d+/).*\.csv$}{$1}; $line = join(",", (split(",", $line))[1,2])  ; print "$line,$file"' | sort > output/html/reports/recent-method-failures.csv
+# just past 24 hours
+find output/html/job-data/ -mmin -1440 -name \*.csv | xargs grep '^FAIL' | perl -nle 'my ($file,$line) = split /:/; $file =~ s{^.*/([^/]+/[^/]+/\d+/).*\.csv$}{$1}; $line = join(",", (split(",", $line))[1,2])  ; print "$line,$file"' | sort > output/html/reports/24hours-method-failures.csv
+# past 7 days
+find output/html/job-data/ -mtime -7 -name \*.csv | xargs grep '^FAIL' | perl -nle 'my ($file,$line) = split /:/; $file =~ s{^.*/([^/]+/[^/]+/\d+/).*\.csv$}{$1}; $line = join(",", (split(",", $line))[1,2])  ; print "$line,$file"' | sort > output/html/reports/7days-method-failures.csv
 
 ### recent failures at a class level - summarized & sorted by by count
-perl -nle '$class = (split(",",$_))[0]; print $class' < output/html/reports/recent-method-failures.csv | uniq -c | sort -rn | perl -ple 's{^\s*(\d+)\s+(\S+)}{$1,$2};' > output/html/reports/recent-top-failing-classes.csv
+# past 7 days
+perl -nle '$class = (split(",",$_))[0]; print $class' < output/html/reports/7days-method-failures.csv | uniq -c | sort -rn | perl -ple 's{^\s*(\d+)\s+(\S+)}{$1,$2};' > output/html/reports/7days-top-failing-classes.csv
 
+### archive our reports based on the current date, overwritin any existing files with same name
+### as the cron runs multiple times a day, this will result in the "last" run from each day being preserved
+mkdir -p output/html/reports/archive/daily
+mkdir -p output/html/reports/archive/weekly
+gzip -c output/html/reports/24hours-method-failures.csv > output/html/reports/archive/daily/`date -u +%F`.method-failures.csv.gz
+gzip -c output/html/reports/7days-method-failures.csv > output/html/reports/archive/weekly/`date -u +%G-%V`.method-failures.csv
                                                  

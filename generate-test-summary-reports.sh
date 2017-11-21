@@ -46,5 +46,5 @@ perl -nle '$class = (split(",",$_))[0]; print $class' < output/html/reports/7day
 mkdir -p output/html/reports/archive/daily
 mkdir -p output/html/reports/archive/weekly
 gzip -c output/html/reports/24hours-method-failures.csv > output/html/reports/archive/daily/`date -u +%F`.method-failures.csv.gz
-gzip -c output/html/reports/7days-method-failures.csv > output/html/reports/archive/weekly/`date -u +%G-%V`.method-failures.csv
+gzip -c output/html/reports/7days-method-failures.csv > output/html/reports/archive/weekly/`date -u +%G-%V`.method-failures.csv.gz
                                                  

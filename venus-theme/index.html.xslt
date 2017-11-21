@@ -47,7 +47,9 @@
             <li>Runs some <a href="./reports">stats/reports</a> on the test failures/success </li>
           </ul>
           <p>
-            Most of interesting stuff can be found in the links above.  The rest of this page is mainly just a chronology of the recent Jenkins builds aggregated by <a href="https://github.com/hossman/venus/">Venus</a>.  (<b>NOTE</b>: The "Local Data" link for each job will only work if it's less then 7 days old, the amount of data you'll find will depend on wether the reporting cron has gotten to that job yet, wether that job ran tests, if there were failures, etc...)
+            Most of interesting stuff can be found in the links above.  The rest of this page is mainly just a chronology of the recent Jenkins builds aggregated by <a href="https://github.com/hossman/venus/">Venus</a>. </p>
+          <p>
+            (<b>NOTE</b>: The "Local Data" link for each job will only work if it's less then 7 days old, the amount of data you'll find will depend on wether the reporting cron has gotten to that job yet, wether that job ran tests, if there were failures, etc...)
           </p>
         </div>
 

@@ -39,7 +39,7 @@
 
         <div id="intro">
           <p>
-            This website:
+            <a href="https://github.com/hossman/jenkins-reports/">This website</a>:
           </p>
           <ul>
             <li>Aggregates the build feeds from various <a href="https://lucene.apache.org/">Lucene/Solr</a> Jenkins servers into one place</li>

@@ -47,4 +47,4 @@ echo "## Cleaning up old job-data"
 
 # NOTE: if changing this, make it's more then generate-test-summary-reports
 # (too lazy to be bothered worrying about the "exactly 7")
-find output/html/job-data/ -mtime +7 -exec rm -d {} \;
+find output/html/job-data/* -mtime +7 -exec rm -d {} \;

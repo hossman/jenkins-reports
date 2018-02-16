@@ -48,8 +48,6 @@ Once the above commands have been run...
     output/cron.log.txt
      - infinitely appended output from each run of cron.sh 
 
-TODO: customize the venus template to add some pretty links to the reports & raw job-data
-
 ####
 #### NOTES ON MAINTAINING THIS
 ####
@@ -76,6 +74,5 @@ TODO LIST:
    - the ratios are important long term so that some "nightly" tests which might fail every day
      actually shows up "high" in our report, instead of "low" just because it's absolute fail count is small
  - make things pretty?
-   - update the venus templates to link to our cached job-data for each entry
    - javascript UI tools to browse the stats?
  - see venus.ini for some notes about requests to Steve & uwe about customizing their feeds to only get lucene jobs

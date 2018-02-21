@@ -46,9 +46,10 @@ perl -nle '$class = (split(",",$_))[0]; print $class' < output/html/reports/7day
 ### recent failure *rates* at both a method and class level (class level listed as method '')
 # just past 24 hours
 cat output/html/reports/24hours-test-results.txt | xargs grep '^' | perl gen-failure-rates.pl > output/html/reports/24hours-failure-rates.csv
+perl gen-failure-rates-json.pl output/html/reports/24hours-failure-rates.csv > output/html/reports/24hours-failure-rates.json
 # past 7 days 
 cat output/html/reports/7days-test-results.txt | xargs grep '^' | perl gen-failure-rates.pl > output/html/reports/7days-failure-rates.csv
-
+perl gen-failure-rates-json.pl output/html/reports/7days-failure-rates.csv > output/html/reports/7days-failure-rates.json
 
 ### archive our reports based on the current date, overwritin any existing files with same name
 ### as the cron runs multiple times a day, this will result in the "last" run from each day being preserved

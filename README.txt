@@ -69,10 +69,7 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
 
 TODO LIST:
 
- - generate better reports
-   - ideally we should compute ratios of fail/pass/skip
-   - the ratios are important long term so that some "nightly" tests which might fail every day
-     actually shows up "high" in our report, instead of "low" just because it's absolute fail count is small
- - make things pretty?
-   - javascript UI tools to browse the stats?
+ - dirty data?
+   - figure out why some xml test result file names are winding up in the *-failure-rates.csv/json files
+   - what is "initializationError" as a method?  should that be treated like a suite failure?
  - see venus.ini for some notes about requests to Steve & uwe about customizing their feeds to only get lucene jobs

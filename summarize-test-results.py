@@ -19,13 +19,15 @@ Writes a CSV summary of the tests and their statuses to STDOUT
 
 """
 
-import sys, libxml2
+import re, sys, libxml2
 
 # a dictionary of the different raw statuses we might get, and how we treat them
 STATUS_MAP = {'FAILED' : 'FAIL',
               'REGRESSION' : 'FAIL',
               'FIXED' : 'PASS',
               'PASSED' : 'PASS',
+              # our own special status for jenkins reporting problems (see below)
+              'JENKINS_REPORTING_ERROR' : 'SKIP', 
               'SKIPPED': 'SKIP'}
 
 
@@ -44,6 +46,15 @@ for case in ctxt.xpathEval('//case'):
         class_name = test_name
         test_name = ''
 
+    # special case: jenkins level reporting failures (ie: problem writing test results to disk ...
+    # no space left on device, corrupt XML file, etc...) show up as class="TEST-*.xml" method="some error"
+    # so if we see something like that, we treat it as a "SKIP" for the affected class
+    # (leave the error in the method for downstream)
+    xml_report_error = re.match('TEST-(.*).xml', class_name)
+    if (xml_report_error):
+        class_name = xml_report_error.group(1)
+        raw_status = 'JENKINS_REPORTING_ERROR'
+        
     # summarize the various raw_statuses as a simple status
     status = STATUS_MAP[raw_status]
         

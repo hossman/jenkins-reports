@@ -69,7 +69,6 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
 
 TODO LIST:
 
- - dirty data?
-   - figure out why some xml test result file names are winding up in the *-failure-rates.csv/json files
-   - what is "initializationError" as a method?  should that be treated like a suite failure?
+ - set longer timeouts for all curl commands: --max-time <seconds> --connect-timeout <seconds>
+
  - see venus.ini for some notes about requests to Steve & uwe about customizing their feeds to only get lucene jobs

@@ -39,8 +39,9 @@ while (<>) {
     my ($status, $class, $method) = (split(",", $line))[0,1,2];
     my $run_inc = ("SKIP" eq $status ? 0 : 1);
     my $fail_inc = ("FAIL" eq $status ? 1 : 0);
-    
-    if ('' ne $method) {
+
+    # these method name 'markers' are 2 indications of a suite level failure in the XML files...
+    if ('' ne $method && 'initializationError' ne $method) {
 	# if this is *not* a suite failure, record an extra psuedo-run for the suite this method is in...
 	# if and only if we haven't already done that for this file + suite combo
 	if (! exists $SUITES_ALREADY_SEEN_PER_FILE->{$class}) {
@@ -51,6 +52,8 @@ while (<>) {
 	    add_run($class, '', 1, 0);
 	}
     } else {
+	# otherwise: this line indicates a suite level failure (either init or teardown)
+	#
 	# sanity check: suites should only be in the files if they were failures...
 	die "WTF: $_" unless 1 == $fail_inc;
 	# don't record the run, just the failure...

@@ -30,6 +30,9 @@ function suiteHeaderFilter(headerValue, rowValue, rowData, filterParams) {
           ("suite" == headerValue && rowValue) ||
           ("method" == headerValue && ! rowValue));
 }
+function percentageToolTip(cell) {
+  return percentage(cell.getValue()) + "% (" + cell.getData().failures + "/" + cell.getData().runs + ")"
+}
 
 $(document).ready(function() {
   $("#failure-rates-table").tabulator({
@@ -57,14 +60,14 @@ $(document).ready(function() {
          {title:"%", field:"fail_rate", align:"right", sorter:"number",
           formatter: function(cell,formatterParams) {
             return percentage(cell.getValue());
-          } },
+          },
+          tooltip: percentageToolTip
+         },
          {title:"Rate", field:"fail_rate", align:"right", minWidth:"200",
           sorter:"number", formatter:"progress",
-          tooltip: function(cell) {
-            return percentage(cell.getValue()) + "%";
-          } } ] },
-         
-          
+          formatterParams: {color:['#92db00','#e1d000','orange','red']},
+          tooltip: percentageToolTip
+          } ] },
       {title:"Run Totals",
        columns:[
          {title:"Runs", field:"runs", sorter:"number", align:"right" },

@@ -44,7 +44,7 @@ gzip_tmp_file=$dir/gzip.tmp.dat
 summary_file=$dir/jenkins.summary.xml
 if [ ! -e $summary_file ]
 then
-  curl -f -sS `cat $url_file`/api/xml > $download_tmp_file
+  curl -f -sS `cat $url_file`'/api/xml?depth=0' > $download_tmp_file
   mv $download_tmp_file $summary_file
   echo $summary_file
 fi
@@ -68,7 +68,9 @@ if [ ! -e $tests_csv_file ]
 then
   if [ ! -e $tests_xml_file ]
   then
-    curl -f -sS `cat $url_file`/testReport/api/xml > $download_tmp_file
+    # NOTE: jenkins tree param expects you to ask for the plural even though the xml tag is singular
+    # (suites not suite, cases not case)
+    curl -f -sS `cat $url_file`'/testReport/api/xml?tree=suites%5Bcases%5BclassName,name,status%5D%5D' > $download_tmp_file
     mv $download_tmp_file $tests_xml_file
     echo $tests_xml_file
   fi

@@ -35,25 +35,36 @@
     <noscript>
       <b>This report doesn't work unless javascript is enabled.</b>
     </noscript>
-    <div id="failure-rates-controls" style="display: none; width: 90vw;">
-      <div>
+    <div id="failure-rates-controls" style="display: none;">
+      <div style="width: 30%; float: left">
         View Report For:
         <select id="failure-rates-table-selector">
           <option value="24hours-failure-rates.json">Past 24 Hours</option>
           <option value="7days-failure-rates.json" selected="selected">Past 7 Days</option>
         </select>
+      </div>
+      <div style="width: 30%; float: left; text-align: right;">
+        <input id="download-button" type="button" value="Download Current Selection"/>
+      </div>
+      <div style="width: 30%; float: right; text-align: right;">
         <em><a href="#what">What is this?</a></em>
       </div>
+      <br style="clear: both"/>
     </div>
     <div id="failure-rates-table"></div>
     <h2 id="what">What Is This?</h2>
     <div>
       <p>
         This Table summarizes the number of failures recorded for each test method over the past 7days / 24hours (as selected by the pulldown).
-        Each method has a single row in the table, showing the number of runs and failures, along with a percentage failure rate, over the specified period.  Runs that were "SKIPPED" (or had to be excluded due to jenkins reporting errors) are excluded.
       </p>
       <p>
+        Each method has a single row in the table, showing the number of runs and failures, along with a percentage failure rate, over the specified period.
         Each individual TestClass <em>suite</em> also has an entry in this table, with a blank value for the "Method", and a "checkmark" in the left most "Suite" column.  If a <em>suite</em> level failures occured for any instances of running the TestClass (either durring class initialization or during suite cleanup) then these failures will be counted at the suite level.  Note that this means a "suite" may show a higher Run count then any/all of the methods in the suite if the failure was during initialization.
+      </p>
+      <p>
+        Runs that were "SKIPPED" (or had to be excluded due to jenkins reporting errors) are excluded. Likewise, only methods/suites with at least one failure are include in the report for brevity (Tests that never run, or always PASS are not the focus here -- the objective is analyzing failures.)
+      </p>
+      <p>
       </p>
       <p>
         The headers of each row can be used to sort the table by that property, and some rows (Suite, Class, Method) can be used to filter which rows are visible. Note in particular:
@@ -62,6 +73,8 @@
         <li>The filter for the "Suite" column can be used to show only Suites or Methods (or Both, the default)</li>
         <li>Allthough the "Class" column only displays the simple Class name to save space, the tooltip for any row shows the fully qualified class name, and you can use the text box to filter by any portion of the FQN.</li>
       </ul>
+      <p>
+        In addition to the "Download Current Selection" button at the top of the table, which is affected by any filters/sorting applied, you can also <a href="reports/">view/download the raw reports as CSV or JSON</a>.
     </div>
   </body>
 </html>

@@ -58,6 +58,7 @@ $(document).ready(function() {
       {title:"Fail Rate",
        columns:[
          {title:"%", field:"fail_rate", align:"right", sorter:"number",
+          download:false, // already downloadable as 'Rate' below
           formatter: function(cell,formatterParams) {
             return percentage(cell.getValue());
           },
@@ -79,5 +80,8 @@ $(document).ready(function() {
     $("#failure-rates-table").tabulator("setData","./reports/" + file);
   });
   $('#failure-rates-table-selector').change();
+  $('#download-button').click(function(){
+    $('#failure-rates-table').tabulator("download", "csv", "failure-rates-data.csv");
+  }); 
   $('#failure-rates-controls').show();
 });

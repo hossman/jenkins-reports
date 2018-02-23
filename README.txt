@@ -70,6 +70,11 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
 TODO LIST:
 
  - set longer timeouts for all curl commands: --max-time <seconds> --connect-timeout <seconds>
- - from failure-report.html it should be possible to link directly to the job-data dirs where the test failed
-   - put the list of job-data dirs in the failure-rates files
-   - clicking on the cell should bring up a dynamic div with links?
+ - failure-report.html
+   - the suggested filename from the download button should include info about the select
+     - 7days/24hours prefix
+     - name of any class/method/suite filtering
+   - it should be possible to link directly to the job-data dirs where the test failed
+     - put the list of job-data dirs in the failure-rates files
+     - clicking on the cell should bring up a dynamic div with links?
+     

@@ -70,5 +70,6 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
 TODO LIST:
 
  - set longer timeouts for all curl commands: --max-time <seconds> --connect-timeout <seconds>
-
- - see venus.ini for some notes about requests to Steve & uwe about customizing their feeds to only get lucene jobs
+ - from failure-report.html it should be possible to link directly to the job-data dirs where the test failed
+   - put the list of job-data dirs in the failure-rates files
+   - clicking on the cell should bring up a dynamic div with links?

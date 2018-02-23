@@ -66,7 +66,7 @@ $(document).ready(function() {
          },
          {title:"Rate", field:"fail_rate", align:"right", minWidth:"200",
           sorter:"number", formatter:"progress",
-          formatterParams: {color:['#92db00','#e1d000','orange','red']},
+          formatterParams: {color:['#b28050','#f5e100','orange','red']},
           tooltip: percentageToolTip
           } ] },
       {title:"Run Totals",

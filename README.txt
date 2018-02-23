@@ -77,4 +77,7 @@ TODO LIST:
    - it should be possible to link directly to the job-data dirs where the test failed
      - put the list of job-data dirs in the failure-rates files
      - clicking on the cell should bring up a dynamic div with links?
-     
+   - in addition to 24hours/7days, there should be a way to compare the past 24 hours with the past 7 days
+     - or the past 7days with the prior 7days from the archive dir (likewise 0-24, vs prior 24)
+     - use ajax to fetch the 2 files, the compute a new row computng change in percentage
+     - should probably be a completley diff report, need diff columns?

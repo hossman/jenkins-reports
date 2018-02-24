@@ -23,19 +23,27 @@ my $SUITES_ALREADY_SEEN_PER_FILE = {};
 my $RESULTS = {};
 
 sub add_run {
-    my ($class, $method, $run_inc, $fail_inc) = @_;
+    my ($job, $class, $method, $run_inc, $fail_inc) = @_;
     if (exists $RESULTS->{"$class,$method"}) {
 	$RESULTS->{"$class,$method"}->{"run"} += $run_inc;
 	$RESULTS->{"$class,$method"}->{"fail"} += $fail_inc;
     } else {
-	$RESULTS->{"$class,$method"} = { "run" => $run_inc, 
+	$RESULTS->{"$class,$method"} = { "failed_jobs" => [ ],
+					 "run" => $run_inc, 
 					 "fail" => $fail_inc };
+    }
+    if (0 < $fail_inc) {
+	push @{$RESULTS->{"$class,$method"}->{"failed_jobs"}}, $job;
     }
 }
 
 
 while (<>) {
     my ($file,$line) = split /:/;
+    
+    die "Can't pull job from file: $file" unless ($file =~ m{^.*/job-data/(.*)/jenkins.tests.csv$});
+    my $job = $1;
+    
     my ($status, $class, $method) = (split(",", $line))[0,1,2];
     my $run_inc = ("SKIP" eq $status ? 0 : 1);
     my $fail_inc = ("FAIL" eq $status ? 1 : 0);
@@ -49,7 +57,7 @@ while (<>) {
 	}
 	if (! exists $SUITES_ALREADY_SEEN_PER_FILE->{$class}->{$file}) {
 	    $SUITES_ALREADY_SEEN_PER_FILE->{$class}->{$file} = 1;
-	    add_run($class, '', 1, 0);
+	    add_run($job, $class, '', 1, 0);
 	}
     } else {
 	# otherwise: this line indicates a suite level failure (either init or teardown)
@@ -60,7 +68,7 @@ while (<>) {
 	# (we already done a special recording of the run the first time we saw the class name)
 	$run_inc = 0;
     }
-    add_run($class, $method, $run_inc, $fail_inc);
+    add_run($job, $class, $method, $run_inc, $fail_inc);
 }
 # we're done with this, let it GC...
 $SUITES_ALREADY_SEEN_PER_FILE = undef;
@@ -70,12 +78,20 @@ while (my ($key, $value) = each %{$RESULTS}) {
     $value->{"fail_rate"} = (0 < $value->{"run"}
 			     ? ($value->{"fail"} / $value->{"run"})
 			     : 0);
+
+    # consistency check...
+    die "$key has inconsistent fail count" unless ($value->{"fail"} == scalar @{$value->{"failed_jobs"}});
 } 
 foreach my $key (sort { $RESULTS->{$b}->{"fail_rate"} <=> $RESULTS->{$a}->{"fail_rate"}
 			# when the fail_rates are identical, secondary sort on the total number of failures
 			|| $RESULTS->{$b}->{"fail"} <=> $RESULTS->{$a}->{"fail"} } keys %{$RESULTS}) {
     # don't bother reporting anything that never failed
     if (0 < $RESULTS->{$key}->{"fail_rate"}) {
-	print join ",", $key, $RESULTS->{$key}->{"fail_rate"}, $RESULTS->{$key}->{"fail"}, $RESULTS->{$key}->{"run"};
+	print join(",", 
+		   $key, $RESULTS->{$key}->{"fail_rate"}, $RESULTS->{$key}->{"fail"}, $RESULTS->{$key}->{"run"},
+		   # Add any new solumns here
+		   '', # skip a 'marker' before job list starts to future proof against new columns
+		   @{ $RESULTS->{$key}->{"failed_jobs"} });
+	;
     }
 }

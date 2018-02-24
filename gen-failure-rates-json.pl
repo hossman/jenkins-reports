@@ -23,9 +23,11 @@ use warnings;
 while (<>) {
     chomp;
     print(($. == 1) ? "[\n " : ",");
-    my ($class,$method,$rate,$fail,$runs) = split /,/;
+    my ($class,$method,$rate,$fail,$runs,$gap,@failed_jobs) = split /,/;
+    die "WTF: gap is really $gap" unless ('' eq $gap);
+    my $failed_jobs_json = join ", ", map qq("$_"), @failed_jobs;
     $rate *= 100; # tabulator wants a percentage
     my $suite = ("" eq $method) ? "true" : "false"; #virtual indicator of if this was a suite failure
-    print qq[ { "suite":$suite, "class":"$class", "method":"$method", "fail_rate":"$rate", "failures":"$fail", "runs":"$runs" }\n];
+    print qq[ { "suite":$suite, "class":"$class", "method":"$method", "fail_rate":"$rate", "failures":"$fail", "runs":"$runs", "failed_jobs": [ $failed_jobs_json ]}\n];
 }
 print "]\n";

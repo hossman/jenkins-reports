@@ -70,13 +70,15 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
 TODO LIST:
 
  - set longer timeouts for all curl commands: --max-time <seconds> --connect-timeout <seconds>
+ - the failed_jobs should be in reverse cronological order
+   - this should automatically make the most recent failures at the top of the dialog
+     when clicking on a row in the failure report
+   - should be fairly easy: just need to ensure *-test-results.txt files are (reverse) sorted
+     - ie: find ... -printf "%T@\t%p\n" | sort -nr | perl -e "prune timestamp"
  - failure-report.html
    - the suggested filename from the download button should include info about the select
      - 7days/24hours prefix
      - name of any class/method/suite filtering
-   - it should be possible to link directly to the job-data dirs where the test failed
-     - put the list of job-data dirs in the failure-rates files
-     - clicking on the cell should bring up a dynamic div with links?
    - in addition to 24hours/7days, there should be a way to compare the past 24 hours with the past 7 days
      - or the past 7days with the prior 7days from the archive dir (likewise 0-24, vs prior 24)
      - use ajax to fetch the 2 files, the compute a new row computng change in percentage

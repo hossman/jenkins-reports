@@ -21,13 +21,15 @@
             src="https://code.jquery.com/jquery-3.3.1.min.js"
 	    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 	    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
     <script type="text/javascript"
             src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
 	    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
 	    crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/3.4.1/css/tabulator.min.css" rel="stylesheet"/ >
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/3.4.1/js/tabulator.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/3.4.1/css/tabulator.min.css" rel="stylesheet">
+
     <script type="text/javascript" src="table-reports.js"></script>
   </head>
   <body>
@@ -36,6 +38,13 @@
       <b>This report doesn't work unless javascript is enabled.</b>
     </noscript>
     <div id="failure-rates-controls" style="display: none;">
+      <div id="row-details-dialog-box" style="display: none;">
+        <div><b>Class:</b> <span id="row-details-class"></span></div>
+        <div id="row-details-method-has-method"><b>Method:</b> <span id="row-details-method"></span></div>
+        <div><b>Failures:</b> <span id="row-details-failrate"></span> (<span id="row-details-fails"></span> / <span id="row-details-runs"></span>)</div>
+        <ul id="row-details-jobs">
+        </ul>
+      </div>
       <div style="width: 30%; float: left">
         View Report For:
         <select id="failure-rates-table-selector">
@@ -65,9 +74,10 @@
         Runs that were "SKIPPED" (or had to be excluded due to jenkins reporting errors) are excluded. Likewise, only methods/suites with at least one failure are include in the report for brevity (Tests that never run, or always PASS are not the focus here -- the objective is analyzing failures.)
       </p>
       <p>
+        Clicking anywhere in a row will bring up a (modal) dialog box showing a summary of the row data, along with a list of links to the (locally cached) <code>job-data</code> for each jenkins job where a failure for this Suite/Method occured.
       </p>
       <p>
-        The headers of each row can be used to sort the table by that property, and some rows (Suite, Class, Method) can be used to filter which rows are visible. Note in particular:
+        The headers of each column can be used to sort the table by that property, and some columns (Suite, Class, Method) can be used to filter which rows are visible. Note in particular:
       </p>
       <ul>
         <li>The filter for the "Suite" column can be used to show only Suites or Methods (or Both, the default)</li>

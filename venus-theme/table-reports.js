@@ -34,6 +34,30 @@ function percentageToolTip(cell) {
   return percentage(cell.getValue()) + "% (" + cell.getData().failures + "/" + cell.getData().runs + ")"
 }
 
+function detailDialog(row_data) {
+  var method_suffix = (row_data.suite ? '' : ('.' + row_data['method']));
+  var title = strip_package(row_data['class']) + method_suffix;
+
+  $( "#row-details-class" ).html(row_data['class']);
+  $( "#row-details-method" ).html(row_data['method']);
+  $( "#row-details-has-method" ).toggle( ! row_data.suite );
+  $( "#row-details-failrate" ).html(percentage(row_data['fail_rate']) + "%");
+  $( "#row-details-fails" ).html(row_data['failures']);
+  $( "#row-details-runs" ).html(row_data['runs']);
+  $( "#row-details-jobs" ).html('');
+  $.each(row_data['failed_jobs'], function(index, value) {
+    $( "#row-details-jobs" ).append("<li><a href=\"job-data/"+value+"\">" + value + "</a></li>");
+  });
+  $( "#row-details-dialog-box" ).show().dialog({
+    title:title,
+    minWidth: window.innerWidth * 0.5, // must be number, can't use '50vw'
+    minHeight: window.innerHeight * 0.3, // must be number, can't use '30vh'
+    maxHeight: window.innerHeight * 0.8, // must be number, can't use '80vh'
+    modal:true,
+  });
+}
+
+
 $(document).ready(function() {
   $("#failure-rates-table").tabulator({
     height:"80vh", // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
@@ -74,6 +98,9 @@ $(document).ready(function() {
          {title:"Runs", field:"runs", sorter:"number", align:"right" },
          {title:"Fails", field:"failures", sorter:"number", align:"right" } ] }
     ],
+    rowClick:function(clickEvent, row) {
+      detailDialog(row.getData());
+    },
   });
   $('#failure-rates-table-selector').change(function() {
     var file = $("select").val();

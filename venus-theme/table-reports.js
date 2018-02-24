@@ -40,7 +40,11 @@ function detailDialog(row_data) {
 
   $( "#row-details-class" ).html(row_data['class']);
   $( "#row-details-method" ).html(row_data['method']);
-  $( "#row-details-has-method" ).toggle( ! row_data.suite );
+  if (row_data.suite) {
+    $( "#row-details-has-method" ).hide();
+  } else {
+    $( "#row-details-has-method" ).show();
+  }
   $( "#row-details-failrate" ).html(percentage(row_data['fail_rate']) + "%");
   $( "#row-details-fails" ).html(row_data['failures']);
   $( "#row-details-runs" ).html(row_data['runs']);

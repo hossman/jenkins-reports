@@ -48,6 +48,18 @@ while (<>) {
     my $run_inc = ("SKIP" eq $status ? 0 : 1);
     my $fail_inc = ("FAIL" eq $status ? 1 : 0);
 
+    if (0 == $run_inc) { # skipped test
+	# sanity check: skipped tests shouldn't fail
+	die "WTF: $_" if (1 == $fail_inc);
+
+	# if the test was skipped, we don't record anything about it,
+	# menaing we also want to skip the SUITES_ALREADY_SEEN_PER_FILE housekeeping below
+	# ie: don't pretend we saw a suite run unless at least one test ran
+	# because we don't want to falsely inflate the aparant/assumed "success" count for a suite
+	# since there won't be any failures listed
+	next;
+    }
+
     # these method name 'markers' are 2 indications of a suite level failure in the XML files...
     if ('' ne $method && 'initializationError' ne $method) {
 	# if this is *not* a suite failure, record an extra psuedo-run for the suite this method is in...

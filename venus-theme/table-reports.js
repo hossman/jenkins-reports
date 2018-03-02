@@ -92,7 +92,7 @@ $(document).ready(function() {
           },
           tooltip: percentageToolTip
          },
-         {title:"Rate", field:"fail_rate", align:"right", minWidth:"200",
+         {title:"Rate", field:"fail_rate", align:"left", minWidth:"200",
           sorter:"number", formatter:"progress",
           formatterParams: {color:['#b28050','#f5e100','orange','red']},
           tooltip: percentageToolTip

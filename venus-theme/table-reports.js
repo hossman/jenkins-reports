@@ -50,7 +50,14 @@ function detailDialog(row_data) {
   $( "#row-details-runs" ).html(row_data['runs']);
   $( "#row-details-jobs" ).html('');
   $.each(row_data['failed_jobs'], function(index, value) {
-    $( "#row-details-jobs" ).append("<li><a href=\"job-data/"+value+"\">" + value + "</a></li>");
+    // bakcompat
+    if ("string" === typeof value) {
+      $( "#row-details-jobs" ).append("<li><a href=\"job-data/"+value+"\">" + value + "</a></li>");
+    } else {
+      var suffix = ( 1 == value['count'] ) ? "" : " <strong>(x" + value['count'] + ")</strong>"; 
+      $( "#row-details-jobs" ).append("<li><a href=\"job-data/"+value['path']+"\">"
+                                      + value['path'] + suffix + "</a></li>");
+    }
   });
   $( "#row-details-dialog-box" ).show().dialog({
     title:title,

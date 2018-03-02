@@ -25,7 +25,15 @@ while (<>) {
     print(($. == 1) ? "[\n " : ",");
     my ($class,$method,$rate,$fail,$runs,$gap,@failed_jobs) = split /,/;
     die "WTF: gap is really $gap" unless ('' eq $gap);
-    my $failed_jobs_json = join ", ", map qq("$_"), @failed_jobs;
+    my %failed_job_counts = ();
+    for (@failed_jobs) {
+	if (exists $failed_job_counts{$_}) {
+	    $failed_job_counts{$_} += 1;
+	} else {
+	    $failed_job_counts{$_} = 1;
+	}
+    }
+    my $failed_jobs_json = join(", ", map { qq({ "path":"$_","count":$failed_job_counts{$_} }) } keys %failed_job_counts);
     $rate *= 100; # tabulator wants a percentage
     my $suite = ("" eq $method) ? "true" : "false"; #virtual indicator of if this was a suite failure
     print qq[ { "suite":$suite, "class":"$class", "method":"$method", "fail_rate":"$rate", "failures":"$fail", "runs":"$runs", "failed_jobs": [ $failed_jobs_json ]}\n];

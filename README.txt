@@ -73,6 +73,13 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
 # Small Stuff...
 
  - set longer timeouts for all curl commands: --max-time <seconds> --connect-timeout <seconds>
+ 
+ - change the directory structure since most people don't care about the venus generated output
+   - venus should use a new dir for it's output (ex: "feed-data" and "feed-data/index.html")
+   - we should have a much smaller top level level "index.html"
+     - move exist top matter content in the customized venus-theme/index.html.xslt
+   - new index.html and our failure-report html/js should no longer live in venus-theme
+     - probably have some sort of src-html with a trivial script to copy to output/html ?
 
 # Suite level failure rate accuracy
 

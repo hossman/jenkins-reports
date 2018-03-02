@@ -81,6 +81,15 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
    - new index.html and our failure-report html/js should no longer live in venus-theme
      - probably have some sort of src-html with a trivial script to copy to output/html ?
 
+ - fetch-data-files.sh should generate a small index.html for each dir...
+   - link to the original job (from url.txt)
+   - link to download the ziped log file
+     - set the 'download' attr on the <a href/> tag to match the job name with '/' replaced by "_" ?
+   - key bits from jenkins.summary.xml ... or use jquery to fetch & render?
+   - link to the jenkins.tests.csv
+     - link should mention the number of failures/runs in the file
+
+
 # Suite level failure rate accuracy
 
  - PROBLEM:

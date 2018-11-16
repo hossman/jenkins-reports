@@ -71,8 +71,15 @@
       </p>
       <p>
         Each method has a single row in the table, showing the number of runs and failures, along with a percentage failure rate, over the specified period.
-        Each individual TestClass <em>suite</em> also has an entry in this table, with a blank value for the "Method", and a "checkmark" in the left most "Suite" column.  If a <em>suite</em> level failures occured for any instances of running the TestClass (either durring class initialization or during suite cleanup) then these failures will be counted at the suite level.  Note that this means a "suite" may show a higher Run count then any/all of the methods in the suite if the failure was during initialization.
       </p>
+      <p>
+        Each individual TestClass <em>suite</em> also has an entry in this table, with a blank value for the "Method", and a "checkmark" in the left most "Suite" column.  If a <em>suite</em> level failures occured for any instances of running the TestClass (either durring class initialization or during suite cleanup) then these failures will be counted at the suite level.  Note that suite level failure rates are not very reliable for 2 key reasons:
+      </p>
+      <ul>
+        <li>The Jenkins/JUnit report structure has no mechanism to indicate when a single suite was run more then once in a given job (ie: repro testing) so the "run" counts can be artificially low</li>
+        <li>A single suite can have multiple suite level failures
+      </ul>
+      <p>This also means a "suite" may show a higher Run count then any/all of the methods in the suite if the failure was during initialization.
       <p>
         Runs that were "SKIPPED" (or had to be excluded due to jenkins reporting errors) are excluded. Likewise, only methods/suites with at least one failure are include in the report for brevity (Tests that never run, or always PASS are not the focus here -- the objective is analyzing failures.)
       </p>

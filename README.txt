@@ -90,54 +90,27 @@ GUID used in all jenkins feeds is identical -- you can safely ignore this WARNIN
      - link should mention the number of failures/runs in the file
 
 
-# Suite level failure rate accuracy
+# Suite level failure rate accuracy (HARD)
 
- - PROBLEM:
-   - early on, to save disk space, i focused on extractng hte list of methods (aka <case/>) from the junit
-     files and dumping that into CSV (summarize-test-results.py)
-   - recognizing <case/> entires that indicate "suite level failures" was an after thought to try to keep
-     the method data clean
-   - later, when i wanted to track failure rates, i realized these "suite level" failure entries
-     only give half the picture: they exist only on failure, not on every run -- so no way to compute ratio
-   - so as a result we have to make assumptions about how often a suite runs based on how many times
-     we see it in a test results file (gen-failure-rates.pl)
-      - but a single suite run can log multiple failures (example: objects leaked *AND* threads leaked)
-      - also: a single job might run the same suite multiple times (ie: the "repro" work sarowe's done)
+ - suite level failure rates are bogus ( see note at bottom of failure-report.html )
    - w/data available in the current data files, a suite failure rate of 100% in past 24 hours, might mean:
       - 7 jenkins jobs ran the suite once each and all 7 failed w/a single failure msg from each
       - 5 jenkins jobs ran the suite once each and one run logged 5 diff suite failure msgs
       - 1 jenkins job ran the suite 3 times: the first one had a single suite failure msg and then when
         that same jenkins job tried to run it 2 more times to repro the failure, it passed both other times.
+ - i thought i could fix this by "improving" some scripts:
+   - fetch-data-files.sh - ask forsuite level info, not just //case
+   - summarize-test-results.py - record a line for every suite run, either PASS/FAIL
+   - gen-failure-rates.pl - expect a line for every suite run, no hueristic
+ - but the root problem is that the 'testReport' XML structure can't tell us how many times a suite was run
+   - if the jenkins build re-runs a TestCase 5 times, there's still only one section for that suite
+ - Is there a better way to get this info from jenkins?
+   - Ick ... parse the logs?
  - GOAL:
    - the suite failure rate should work just like the method failure rate
    - we should definitively know how many times the suite ran, even if it ran more then once in a
      single jenkins job, and how many of those runs had *ONE OR MORE* failures
    - ie: should be impossible for suite failure rates to be > 100%
- - IDEA:
-   - change the /testReport URL to also fetch the name of each suite
-   - update summarize-test-results.py to loop over every <suite>, then loop over every <case>
-     - for every suite, record a suite level "run" line in the output:
-       - if one of the marker <case> entires indicating a suite failure, it's a *single* FAIL
-         - ideally: move the 'initializationError' check here (currently in gen-failure-rates.pl)
-       - even if there is no "suite level failure" indication, log the suite as a PASS
-     - method/case level records should be largely unchanged
-   - gen-failure-rates.pl changes...
-     - IDEAL: just rip out all the hueristic / $SUITES_ALREADY_SEEN_PER_FILE logic
-       - PRACTICALLY: this would mean 7 days of problematic / virtually useless suite level stats
-         - because one a build is a few days old, we typically can't re-fetch the test results from jenkins
-	 - so we'd be mixing/matching "old" files that don't have accurate "suite runs" recorded,
-	   with new files that do
-     - PRAGMATIC...
-       - make fetch-data-files.sh start using a slightly diff per-job csv file name for the test results
-         - ie: jenkins.test-results.csv instead of jenkins.tests.csv
-	 - needs to be smart enough to only build jenkins.test-results.csv if neither already exists
-       - have generate-test-summary-reports.sh feed both file names into gen-failure-rates.pl
-         - each job should still only have one
-       - gen-failure-rates.pl should look at the filename to decide how to parse it
-         - if it's the old filename, keep using the hueristic
-	 - if it's the new filename, ignore the hueristic use the raw data as is
-       - after at least a week, it should be possible to rip out the old hueristic code
-
 
 # failure-report.html
 

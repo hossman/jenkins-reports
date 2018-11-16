@@ -54,6 +54,10 @@ for case in ctxt.xpathEval('//case'):
     if (xml_report_error):
         class_name = xml_report_error.group(1)
         raw_status = 'JENKINS_REPORTING_ERROR'
+
+    # parmeterized tests have their inputs reported as part of the method name
+    # strip these so the metrics include all runs of the test
+    test_name = re.sub('\s+|\{.*\}', '', test_name)
         
     # summarize the various raw_statuses as a simple status
     status = STATUS_MAP[raw_status]

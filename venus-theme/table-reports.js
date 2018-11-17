@@ -31,13 +31,16 @@ function suiteHeaderFilter(headerValue, rowValue, rowData, filterParams) {
           ("method" == headerValue && ! rowValue));
 }
 function percentageToolTip(cell) {
+  // TODO: change this to take in the 3 values so it can be used on the suspicious report as well
   return percentage(cell.getValue()) + "% (" + cell.getData().failures + "/" + cell.getData().runs + ")"
 }
 
 function detailDialog(row_data) {
+  // TODO: make this smart enough to show "historic" values if they exist in row_data
+  
   var method_suffix = (row_data.suite ? '' : ('.' + row_data['method']));
   var title = strip_package(row_data['class']) + method_suffix;
-
+  
   $( "#row-details-class" ).html(row_data['class']);
   $( "#row-details-method" ).html(row_data['method']);
   if (row_data.suite) {
@@ -70,6 +73,58 @@ function detailDialog(row_data) {
 
 
 $(document).ready(function() {
+  // TODO: make logic below more conditional on what tables are found (ie: "is this the suspicious report?")
+  
+  $("#suspicious-failure-rates-table").tabulator({
+    height:"80vh", // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+    layout:"fitDataFill",
+    columnVertAlign:"bottom",
+    columns:[ //Define Table Columns
+      {title:"Test",
+       columns:[
+         {title:"Class", field:"class", headerFilter:"input", minWidth:"300",
+          formatter: function(cell, formatterParams) {
+            return strip_package(cell.getValue());
+          },
+          tooltip: function(cell) {
+            return cell.getValue();
+          } },
+         {title:"Method", field:"method", headerFilter:"input", minWidth:"200" } ] },
+      {title:"Fail Rate %",
+       columns:[
+         {title:"Delta", field:"delta_fail_rate", align:"right", sorter:"number",
+          download:true, 
+          formatter: function(cell,formatterParams) {
+            return percentage(cell.getValue());
+          },
+         },
+         {title:"Delta %", field:"delta_fail_rate", align:"left", minWidth:"200",
+          download:false, // already downloadable as 'Delta' above 
+          sorter:"number", formatter:"progress",
+          formatterParams: {color:['#b28050','#f5e100','orange','red']},
+         },
+         {title:"Recent", field:"fail_rate", align:"right", sorter:"number",
+          download:true, 
+          formatter: function(cell,formatterParams) {
+            return percentage(cell.getValue());
+          },
+          tooltip: percentageToolTip
+         },
+         {title:"Historic", field:"historic_fail_rate", align:"right", sorter:"number",
+          download:true, 
+          formatter: function(cell,formatterParams) {
+            return percentage(cell.getValue());
+          },
+         }
+       ] },
+    ],
+    rowClick:function(clickEvent, row) {
+      detailDialog(row.getData());
+    },
+  });
+  $("#suspicious-failure-rates-table").tabulator("setData","./reports/suspicious-failure-rates.json");
+  $("#suspicious-failure-rates-table").tabulator("setSort", "delta_fail_rate", "desc");
+  
   $("#failure-rates-table").tabulator({
     height:"80vh", // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
     layout:"fitDataFill",

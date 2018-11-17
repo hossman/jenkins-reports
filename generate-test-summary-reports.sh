@@ -65,3 +65,6 @@ gzip -c output/html/reports/7days-method-failures.csv > output/html/reports/arch
 gzip -c output/html/reports/24hours-failure-rates.csv > output/html/reports/archive/daily/`date -u +%F`.failure-rates.csv.gz
 gzip -c output/html/reports/7days-failure-rates.csv > output/html/reports/archive/weekly/`date -u +%G-%V`.failure-rates.csv.gz
                                                  
+### once we have our recent reports, and our archives, we can generate a comparitive
+### report of (potentially) suspicious failure rates
+(cd output/html/reports/archive/weekly/ && ls -1t | grep failure-rates | head -4 | tail -3 | xargs zcat) | ./gen-suspicious-failure-rates-json.pl output/html/reports/7days-failure-rates.csv > output/html/reports/suspicious-failure-rates.json

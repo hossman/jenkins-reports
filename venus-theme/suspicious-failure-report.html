@@ -1,0 +1,65 @@
+<html>
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    -->
+  <head>
+    <title>Lucene/Solr Jenkins Suspicious Test Failure Rate Report</title>
+    <script type="text/javascript"
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+	    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script type="text/javascript"
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+	    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+	    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/3.4.4/css/tabulator.min.css"
+          integrity="sha256-WfWmG8Jxk+A4LGN7VplyrYkyOWPItVDf8ksXJqbdJ8M="
+          crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/3.4.4/js/tabulator.min.js"
+            integrity="sha256-2V5lzvYLq3S4Zc+RRqixKS157vr8DHdzZ9/3ZTI06hA="
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="table-reports.js"></script>
+  </head>
+  <body>
+    <h1>Lucene/Solr Jenkins Suspicious Test Failure Rate Report</h1>
+    <noscript>
+      <b>This report doesn't work unless javascript is enabled.</b>
+    </noscript>
+    <div id="failure-rates-controls" style="display: none;">
+      <div id="row-details-dialog-box" style="display: none;">
+        <div><b>Class:</b> <span id="row-details-class"></span></div>
+        <div id="row-details-has-method"><b>Method:</b> <span id="row-details-method"></span></div>
+        <div><b>Failures:</b> <span id="row-details-failrate"></span> (<span id="row-details-fails"></span> / <span id="row-details-runs"></span>)</div>
+        <ul id="row-details-jobs">
+        </ul>
+      </div>
+      <div style="width: 30%; float: left">
+        Viewing past 7 days (rolling) vs previous 3 calendar weeks.
+      </div>
+      <div style="width: 30%; float: right; text-align: right;">
+        <em><a href="#what">What is this?</a></em>
+      </div>
+      <br style="clear: both"/>
+    </div>
+    <div id="suspicious-failure-rates-table"></div>
+    <h2 id="what">What Is This?</h2>
+    <div>
+      TODO
+    </div>
+  </body>
+</html>

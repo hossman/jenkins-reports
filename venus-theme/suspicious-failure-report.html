@@ -44,12 +44,16 @@
       <div id="row-details-dialog-box" style="display: none;">
         <div><b>Class:</b> <span id="row-details-class"></span></div>
         <div id="row-details-has-method"><b>Method:</b> <span id="row-details-method"></span></div>
-        <div><b>Failures:</b> <span id="row-details-failrate"></span> (<span id="row-details-fails"></span> / <span id="row-details-runs"></span>)</div>
+        <div id="row-details-historic"><b>Historic Failures:</b> <span id="row-details-historic-failrate"></span> (<span id="row-details-historic-fails"></span> / <span id="row-details-historic-runs"></span>)</div>
+        <div><b>Recent Failures:</b> <span id="row-details-failrate"></span> (<span id="row-details-fails"></span> / <span id="row-details-runs"></span>)</div>
         <ul id="row-details-jobs">
         </ul>
       </div>
       <div style="width: 30%; float: left">
-        Viewing past 7 days (rolling) vs previous 3 calendar weeks.
+        Viewing past 7 days (rolling) <br/> vs previous 3 calendar weeks.
+      </div>
+      <div style="width: 30%; float: left; text-align: right;">
+        <input id="download-button" type="button" value="Download Current Selection"/>
       </div>
       <div style="width: 30%; float: right; text-align: right;">
         <em><a href="#what">What is this?</a></em>

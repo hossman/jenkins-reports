@@ -67,4 +67,6 @@ gzip -c output/html/reports/7days-failure-rates.csv > output/html/reports/archiv
                                                  
 ### once we have our recent reports, and our archives, we can generate a comparitive
 ### report of (potentially) suspicious failure rates
+
+# NOTE: if head/tail args are changed, make sure to update info on suspicious-failure-report.html
 (cd output/html/reports/archive/weekly/ && ls -1t | grep failure-rates | head -4 | tail -3 | xargs zcat) | ./gen-suspicious-failure-rates-json.pl output/html/reports/7days-failure-rates.csv > output/html/reports/suspicious-failure-rates.json

@@ -63,7 +63,27 @@
     <div id="suspicious-failure-rates-table"></div>
     <h2 id="what">What Is This?</h2>
     <div>
-      TODO
+      <p>
+        This Table summarizes the number of failures recorded for each test method over the past 7days when the rate of failures has increased realtive to the past 3 calendar weeks.
+      </p>
+      <p>
+        Each method has a single row in the table, showing the number of "Recent" runs and failures (past 7 days) compared to the number of "Historic" runs and failures (previous 3 calendar weeks) along with a percentage failure rate for each, and the "Delta" failure rate when comparing "Recent" with "Historic".  Only tests where the "Delta" is positive (ie: the Recent failure rate is higher then the Historic failure rate) are listed.
+      </p>
+      <p>
+        Note: because suite level failure rates are inheriently not very reliable (due to Jenkins/JUnint reporting limitations) suite level failures are not included in this report.
+      </p>
+      <p>
+        Clicking anywhere in a row will bring up a (modal) dialog box showing a summary of the row data, along with a list of links to the (locally cached) <code>job-data</code> for each jenkins job where a Recent failure for this method occured.
+      </p>
+      <p>
+        The headers of each column can be used to sort the table by that property, and some columns (Class, Method) can be used to filter which rows are visible. Note in particular:
+      </p>
+      <ul>
+        <li>Allthough the "Class" column only displays the simple Class name to save space, the tooltip for any row shows the fully qualified class name, and you can use the text box to filter by any portion of the FQN.</li>
+      </ul>
+      <p>
+        In addition to the "Download Current Selection" button at the top of the table, which is affected by any filters/sorting applied, you can also <a href="reports/suspicious-failure-rates.json">view/download the raw report data as JSON</a>.
+      </p>
     </div>
   </body>
 </html>

@@ -44,7 +44,11 @@
           <ul>
             <li>Aggregates the build feeds from various <a href="https://lucene.apache.org/">Lucene/Solr</a> Jenkins servers into one place</li>
             <li>Archives the <a href="./job-data">test results &amp; logs</a> from any Jenkins build with any test failures (for the past 7 days)</li>
-            <li>Runs some <a href="./reports">stats/reports</a> on the test <a href="./failure-report.html">failures/success rates</a> </li>
+            <li>Runs some <a href="./reports">stats/reports</a> on the test failure/success rates and summarizes in easy to view HTML tables: <ul>
+                <li><a href="./failure-report.html">Failures rates for all tests in past 24h / 7days</a></li>
+                <li><a href="./suspicious-failure-report.html">Tests with suspicious failure rates for past 7 days compared to previous 3 weeks</a></li>
+              </ul>
+            </li>
           </ul>
           <p>
             Most of interesting stuff can be found in the links above.  The rest of this page is mainly just a chronology of the recent Jenkins builds aggregated by <a href="https://github.com/hossman/venus/">Venus</a>. </p>

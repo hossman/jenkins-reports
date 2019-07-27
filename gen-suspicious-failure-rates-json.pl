@@ -70,6 +70,7 @@ while (<>) {
     $record->{'historic_runs'} += $runs;
 }
 
+print "[";
 my $i = 0;
 while (my ($key, $record) = each %results) {
     
@@ -91,7 +92,7 @@ while (my ($key, $record) = each %results) {
     my $failed_jobs_json = $record->{'failed_jobs_json'};
     
     $i++;
-    print((1 == $i) ? "[\n " : ",");
+    print((1 == $i) ? "\n  " : ", ");
     print qq[ { "class":"$class", "method":"$method", "fail_rate":"$rate", "failures":"$fail", "runs":"$runs", "historic_fail_rate":"$historic_rate", "historic_failures":"$historic_fail", "historic_runs":"$historic_runs", "delta_fail_rate":"$delta", "failed_jobs": [ $failed_jobs_json ]}\n];
 }
 

@@ -20,9 +20,10 @@
 use strict;
 use warnings;
 
+print "[";
 while (<>) {
     chomp;
-    print(($. == 1) ? "[\n " : ",");
+    print(($. == 1) ? "\n  " : ", ");
     my ($class,$method,$rate,$fail,$runs,$gap,@failed_jobs) = split /,/;
     die "WTF: gap is really $gap" unless ('' eq $gap);
     my %failed_job_counts = ();

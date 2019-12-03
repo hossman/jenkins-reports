@@ -1,0 +1,166 @@
+<html>
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    -->
+  <head>
+    <title>Lucene/Solr Jenkins Trend History of Recent Failures</title>
+    <script type="text/javascript"
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+	    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script type="text/javascript"
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+	    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+	    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/3.4.4/css/tabulator.min.css"
+          integrity="sha256-WfWmG8Jxk+A4LGN7VplyrYkyOWPItVDf8ksXJqbdJ8M="
+          crossorigin="anonymous" />
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.js"
+            integrity="sha256-E7nBugZ/YuTywPG7MCezJ/wRiTIC3Bb0wiAYoLAkYg8="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.css"
+          integrity="sha256-pHM5Z7zWPmme9MLjqlTNWdTwInprJ1fCXSdQje92k4w="
+          crossorigin="anonymous" />    
+    <script>
+      // currently unused...
+      function legendFormatter(data) {
+        if (data.x == null) {
+          return "<br/>";
+        }
+        var html = this.getLabels()[0] + ': ' + data.xHTML;
+        data.series.forEach(function(series) {
+          if (!series.isVisible) return;
+          if (series.isHighlighted) {
+            var labeledData = series.yHTML;
+            labeledData += ': ' + series.labelHTML + ' ' + series.dashHTML;
+            html += ': ' + labeledData; 
+          }
+        });
+        return html;
+      }
+
+
+      $(document).ready(function() {
+      var d = new Dygraph(
+          document.getElementById("failure-rate-history-graph"),
+          "./reports/failure-rate-history.csv",
+          {
+            // title: 'Historic Failure Rates',
+      
+            ylabel: 'Failure %',
+            legend: 'never',
+            labelsShowZeroValues: true,
+            hideOverlayOnMouseOut: true,
+            // labelsDiv: document.getElementById("failure-rate-history-graph-legend"),
+            // legendFormatter: legendFormatter,
+
+
+            highlightCircleSize: 2,
+            strokeWidth: 1,
+      
+            highlightSeriesOpts: {
+              strokeWidth: 4,
+              strokeBorderWidth: 2,
+              highlightCircleSize: 6,
+            },
+            axes: {
+              x: {
+                axisLabelWidth: 100,
+                valueFormatter: function(ms) {
+                  return (new Date(ms)).toISOString().split('T')[0];
+                },
+                axisLabelFormatter: function(d) {
+                  return d.toISOString().split('T')[0];
+                }
+              },
+              y: {
+                axisLabelWidth: 60,
+                valueFormatter: function(y) {
+                  return (y * 100).toPrecision(4) + '%';
+                },
+                axisLabelFormatter: function(y) {
+                  return (y * 100).toPrecision(4) + '%';
+                }
+              }
+            }
+          }
+      );
+      d.ready(function () {
+        // aparently we have to build our own map of series => index for use later in the highlightCallback?
+        var seriesIndexes = new Map();
+
+        // populate the pulldown & seriesIndexes
+        var _select = $('#series-selector');
+        _select.append( $('<option></option>').val("").html("(none)") );
+        for (var index = 1; index < d.getLabels().length; index++) {
+           // NOTE: start at '1' to avoid y-axiz
+          var series = d.getLabels()[index];
+          seriesIndexes.set(series,index);
+          _select.append( $('<option></option>').val(series).html(series) );
+        };
+        _select.change(function() {
+          if ("" == _select.val()) {
+            d.clearSelection();
+          } else {
+            d.setSelection(false, _select.val(), true);
+          }
+        });                            
+        var onclick = function(ev) {
+          if (d.isSeriesLocked()) {
+            d.clearSelection();
+            _select.val("");
+          } else {
+            d.setSelection(d.getSelection(), d.getHighlightSeries(), true);
+            _select.val(d.getHighlightSeries());
+          }
+        };
+        var highlightCallback = function(event, x, points, row, seriesName) {
+          $('#legend-date').html((new Date(x)).toISOString().split('T')[0]);
+          // in the callback, points does *not* include the y axies in series
+          var pointsData = points[seriesIndexes.get(seriesName) - 1];
+          $('#legend-fail-rate').html( (100 * pointsData.yval).toPrecision(4) + ' %');
+          $('#legend-series').html(seriesName);
+        };
+        d.updateOptions({clickCallback: onclick, highlightCallback: highlightCallback}, true);
+      });
+  });
+  </script>
+  </head>
+  <body>
+    <h1>Lucene/Solr Jenkins Trend History of Recent Failures</h1>
+    <noscript>
+      <b>This report doesn't work unless javascript is enabled.</b>
+    </noscript>
+    <div style="width: 100%; clear: both">
+      <div style="width: 20%; float: left; text-align: right">Locked: </div>
+      <div style="width: 80%; float: right;"><select id="series-selector" style=""></select></div>
+      <br style="clear: both;"/>
+      <div style="width: 20%; float: left; text-align: right">Highlighted: </div>
+      <div id="legend" style="width: 80%; float: right; font-size: 1.1em;">
+        <span id="legend-series" style="font-weight: bolder"></span><br/>
+        Failures: <span id="legend-fail-rate"></span><br/>
+        Date: <span id="legend-date"></span><br/>
+      </div>
+    </div>
+    <div id="failure-rate-history-graph" style="width: 100%; height: 80%; clear: both;"></div>
+    <h2 id="what">What Is This?</h2>
+    <div>
+      TODO
+    </div>
+  </body>
+</html>

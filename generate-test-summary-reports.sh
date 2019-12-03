@@ -70,3 +70,9 @@ gzip -c output/html/reports/7days-failure-rates.csv > output/html/reports/archiv
 
 # NOTE: if head/tail args are changed, make sure to update info on suspicious-failure-report.html
 (cd output/html/reports/archive/weekly/ && ls -1t | grep failure-rates | head -4 | tail -3 | xargs zcat) | ./gen-suspicious-failure-rates-json.pl output/html/reports/7days-failure-rates.csv > output/html/reports/suspicious-failure-rates.json
+
+### once we have our recent reports, and our archives, we can generate a graph showing
+### the trend of historical failure rates for tests that have recently failed
+
+# NOTE: CWD is important, this script execs `find`...
+(cd output/html/reports/ && ../../../gen-failure-graph-data.pl < 7days-failure-rates.csv > failure-rate-history.csv)

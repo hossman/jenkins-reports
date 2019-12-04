@@ -102,38 +102,70 @@
       );
       d.ready(function () {
         // aparently we have to build our own map of series => index for use later in the highlightCallback?
-        var seriesIndexes = new Map();
+        var _seriesIndexes = new Map();
+        var _seriesLabels = d.getLabels();
 
-        // populate the pulldown & seriesIndexes
+        // populate the pulldown (_select) & _seriesIndexes
         var _select = $('#series-selector');
         _select.append( $('<option></option>').val("").html("(none)") );
-        for (var index = 1; index < d.getLabels().length; index++) {
-           // NOTE: start at '1' to avoid y-axiz
-          var series = d.getLabels()[index];
-          seriesIndexes.set(series,index);
+        for (var index = 1; index < _seriesLabels.length; index++) {
+          // NOTE: start at 'index = 1' to avoid y-axiz (0)
+          var series = _seriesLabels[index];
+          _seriesIndexes.set(series,index);
           _select.append( $('<option></option>').val(series).html(series) );
         };
-        _select.change(function() {
-          if ("" == _select.val()) {
+
+        // generic hook for updating some misc state when locking/unlocking a series by name 
+        // used on graph load from '#frag' or from _select.onchange event
+        var lockSeries = function(seriesName) {
+          _select.val(seriesName);
+          if ('' == seriesName) {
             d.clearSelection();
+            _select.val('');
+            window.location.hash = '';
+            $('#legend-series').html('').css('color','');
           } else {
-            d.setSelection(false, _select.val(), true);
+            d.setSelection(false, seriesName, true);
+            _select.val(d.getHighlightSeries());
+            window.location.hash = "#series/" + seriesName;
+            // colors does *not* include the y axies in series
+            var color = d.getColors()[_seriesIndexes.get(seriesName) - 1];
+            $('#legend-series').html(seriesName).css('color',color);
           }
+        };
+                                    
+        // if we have a '#frag' in our URL which indicates a series, we'll want to lock it immediately
+        { var fragMatchSeries = /.*series\/(.*)/.exec(window.location.hash);
+          if (null !== fragMatchSeries) {
+            var seriesName = fragMatchSeries[1]; // 0 is the whole match
+            if (_seriesIndexes.has(seriesName)) {
+              lockSeries(seriesName);
+              // this may be a 'bookmark' pointing at a series that's no longer in our report
+            } else {
+              window.location.hash = '';
+            }
+          }
+        }
+      
+        _select.change(function() {
+          lockSeries(_select.val());
         });                            
         var onclick = function(ev) {
           if (d.isSeriesLocked()) {
             d.clearSelection();
             _select.val("");
+            window.location.hash = '';
           } else {
             d.setSelection(d.getSelection(), d.getHighlightSeries(), true);
             _select.val(d.getHighlightSeries());
+            window.location.hash = "#series/" + d.getHighlightSeries();
           }
         };
         var highlightCallback = function(event, x, points, row, seriesName) {
           $('#legend-date').html((new Date(x)).toISOString().split('T')[0]);
-          // in the callback, points does *not* include the y axies in series
-          var pointsData = points[seriesIndexes.get(seriesName) - 1];
-          var color = d.getColors()[seriesIndexes.get(seriesName) - 1];
+          // in the callback, points & colors does *not* include the y axies in series
+          var pointsData = points[_seriesIndexes.get(seriesName) - 1];
+          var color = d.getColors()[_seriesIndexes.get(seriesName) - 1];
           $('#legend-fail-rate').html( (100 * pointsData.yval).toPrecision(4) + ' %');
           $('#legend-series').html(seriesName).css('color',color);
         };

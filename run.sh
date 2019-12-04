@@ -48,3 +48,6 @@ echo "## Cleaning up old job-data"
 # NOTE: if changing this, make it's more then generate-test-summary-reports
 # (too lazy to be bothered worrying about the "exactly 7")
 find output/html/job-data/* -mtime +7 -exec rm -d {} \;
+
+echo "## Cleaning up excessively old venus-cache"
+find output/venus-cache/ -mtime +90 -exec rm -d {} \;

@@ -46,8 +46,10 @@ function detailDialog(row_data) {
   $( "#row-details-method" ).html(row_data['method']);
   if (row_data.suite) {
     $( "#row-details-has-method" ).hide();
+    $( "#row-details-historic-trend-link" ).hide();
   } else {
     $( "#row-details-has-method" ).show();
+    $( "#row-details-historic-trend-link" ).attr('href',"./history-trend-of-recent-failures.html#series/"+row_data['class']+method_suffix).show();
   }
   if ( $( "#row-details-historic" ).length ) { // only in suspicious failure report
     $( "#row-details-historic-failrate" ).html(percentage(row_data['historic_fail_rate']) + "%");

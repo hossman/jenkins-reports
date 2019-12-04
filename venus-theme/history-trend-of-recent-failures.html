@@ -133,10 +133,21 @@
           $('#legend-date').html((new Date(x)).toISOString().split('T')[0]);
           // in the callback, points does *not* include the y axies in series
           var pointsData = points[seriesIndexes.get(seriesName) - 1];
+          var color = d.getColors()[seriesIndexes.get(seriesName) - 1];
           $('#legend-fail-rate').html( (100 * pointsData.yval).toPrecision(4) + ' %');
-          $('#legend-series').html(seriesName);
+          $('#legend-series').html(seriesName).css('color',color);
         };
-        d.updateOptions({clickCallback: onclick, highlightCallback: highlightCallback}, true);
+        var unhighlightCallback = function() {
+          if (! d.isSeriesLocked()) {
+            $('#legend-date').html('');
+            $('#legend-fail-rate').html('');
+            $('#legend-series').html('').css('color','');
+          }
+        };
+        d.updateOptions({ clickCallback: onclick,
+                          highlightCallback: highlightCallback,
+                          unhighlightCallback: unhighlightCallback,
+                        }, true);
       });
   });
   </script>

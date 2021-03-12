@@ -41,9 +41,13 @@ for case in ctxt.xpathEval('//case'):
     test_name = ctxt.xpathEval('./name')[0].getContent()
     raw_status = ctxt.xpathEval('./status')[0].getContent()
     
-    # special case: suite related failures get an entry with the test_name blank
+    # special case: suite related failures: record an entry with the test_name blank
+    # Older style ant reporting...
     if (class_name == 'junit.framework.TestSuite'):
         class_name = test_name
+        test_name = ''
+    # Newer style gradle reporting...
+    if (test_name == 'classMethod'):
         test_name = ''
 
     # special case: jenkins level reporting failures (ie: problem writing test results to disk ...

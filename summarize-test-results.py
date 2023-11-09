@@ -19,7 +19,8 @@ Writes a CSV summary of the tests and their statuses to STDOUT
 
 """
 
-import re, sys, libxml2
+import re, sys
+from lxml import etree
 
 # a dictionary of the different raw statuses we might get, and how we treat them
 STATUS_MAP = {'FAILED' : 'FAIL',
@@ -32,14 +33,12 @@ STATUS_MAP = {'FAILED' : 'FAIL',
 
 
 # parse input stream
-doc = libxml2.parseDoc(sys.stdin.read())
-ctxt = doc.xpathNewContext()
+tree = etree.parse(sys.stdin)
 
-for case in ctxt.xpathEval('//case'):
-    ctxt.setContextNode(case);
-    class_name = ctxt.xpathEval('./className')[0].getContent()
-    test_name = ctxt.xpathEval('./name')[0].getContent()
-    raw_status = ctxt.xpathEval('./status')[0].getContent()
+for case in tree.xpath('//case'):
+    class_name = case.xpath('./className')[0].text
+    test_name = case.xpath('./name')[0].text
+    raw_status = case.xpath('./status')[0].text
     
     # special case: suite related failures: record an entry with the test_name blank
     # Older style ant reporting...

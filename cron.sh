@@ -28,6 +28,8 @@
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
+source /home/hossman/python-virtualenvs/p2.7_venus/bin/activate
+
 if [ "$#" != "1" ]; then
   echo "THIS SCRIPT REQUIRES EXACTLY ONE COMMAND LINE ARG: THE ABSOLUTE PATH TO planet.py"
   exit -1

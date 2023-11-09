@@ -51,9 +51,9 @@ fi
 
 # if there are no testReports, then no tests were run (git failure, or maybe an artifacts only build)
 # in which case we can skip all other steps
-if ! grep -L testReport $summary_file > /dev/null 2>&1; then
+if ! grep -q testReport $summary_file > /dev/null 2>&1; then
   no_tests_file=$dir/no_tests.txt
-  if [ ! -e $summary_file ]
+  if [ ! -e $no_tests_file ]
   then
     touch $no_tests_file
     echo $no_tests_file
@@ -83,7 +83,7 @@ fi
 
 # if there were any test fails, download the full build log
 # (don't bother downloading for successful builds to save space)
-if ! grep -L '<failCount>0</failCount>' $summary_file > /dev/null 2>&1; then
+if ! grep -q '<failCount>0</failCount>' $summary_file > /dev/null 2>&1; then
   log_file=$dir/jenkins.log.txt
   log_gz_file=$log_file.gz
   if [ ! -e $log_gz_file ]

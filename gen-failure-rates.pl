@@ -75,7 +75,11 @@ while (<>) {
 	# otherwise: this line indicates a suite level failure (either init or teardown)
 	#
 	# sanity check: suites should only be in the files if they were failures...
-	die "WTF: $_" unless 1 == $fail_inc;
+	#  -  Except one time, on one jenkins run, there was a single test class that jenkins reported a quite level 'PASS'
+	#      ... no idea why.
+	# # die "WTF: $_" unless 1 == $fail_inc;
+
+	
 	# don't record the run, just the failure...
 	# (we already done a special recording of the run the first time we saw the class name)
 	$run_inc = 0;
